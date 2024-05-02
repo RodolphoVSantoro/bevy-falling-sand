@@ -14,7 +14,7 @@ use ticks_processor::process_tick;
 
 mod input_handler;
 use input_handler::mouse_button_events;
-mod rules;
+mod particle_rules;
 
 fn main() {
     let board = create_board();

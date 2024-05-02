@@ -1,11 +1,11 @@
-use crate::rules::update;
+use crate::particle_rules::update;
 
 use crate::{
     config::{MAX_HEIGHT, MAX_WIDTH},
     types::{Board, FrameTimer, Position},
 };
 
-use bevy::prelude::{AssetServer, Handle, Image, Query, Res, ResMut, Time};
+use bevy::prelude::{AssetServer, Commands, Handle, Image, Query, Res, ResMut, Time};
 
 fn update_cells(board: &mut ResMut<Board>) {
     for x in 0..MAX_WIDTH {
@@ -21,17 +21,24 @@ fn update_cells(board: &mut ResMut<Board>) {
 }
 
 fn update_sprites(
+    commands: &mut Commands,
     board: &mut ResMut<Board>,
     asset_server: Res<AssetServer>,
     sprite_query: &mut Query<(&Position, &mut Handle<Image>)>,
 ) {
-    for (position, mut sprite) in sprite_query.iter_mut() {
-        let cell = &board.0[position.x][position.y];
-        *sprite = asset_server.load(cell.kind.get_texture());
+    for entity in sprite_query.iter_mut() {
+        let (position, mut sprite) = entity;
+        if position.layer == 0 {
+            let cell = &board.0[position.x][position.y];
+            *sprite = asset_server.load(cell.kind.get_texture());
+        } else if position.layer == 1 {
+            if board.0[position.x][position.y].temperature < 500 {}
+        }
     }
 }
 
 pub fn process_tick(
+    mut commands: Commands,
     time: Res<Time>,
     mut timer: ResMut<FrameTimer>,
     mut board: ResMut<Board>,
@@ -42,5 +49,5 @@ pub fn process_tick(
         return;
     }
     update_cells(&mut board);
-    update_sprites(&mut board, asset_server, &mut sprite_query);
+    update_sprites(&mut commands, &mut board, asset_server, &mut sprite_query);
 }

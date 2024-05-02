@@ -32,7 +32,7 @@ pub fn setup(
         for y in 0..MAX_HEIGHT {
             commands.spawn((
                 SpriteBundle {
-                    texture: asset_server.load(CellKind::NOTHING.get_texture()),
+                    texture: asset_server.load(CellKind::Nothing.get_texture()),
                     transform: Transform::from_translation(Vec3::new(
                         (x * 10) as f32 - 500.0,
                         (y * 10) as f32 - 300.0,
@@ -40,7 +40,7 @@ pub fn setup(
                     )),
                     ..Default::default()
                 },
-                Position { x, y },
+                Position { x, y, layer: 0 },
             ));
         }
     }
@@ -54,6 +54,12 @@ pub fn setup(
         texture: asset_server.load("text/water.png"),
         transform: Transform::from_scale(Vec3::new(0.5, 0.5, 0.5))
             .with_translation(Vec3::new(550.0, 0.0, 0.0)),
+        ..Default::default()
+    });
+    commands.spawn(SpriteBundle {
+        texture: asset_server.load("text/wood.png"),
+        transform: Transform::from_scale(Vec3::new(0.5, 0.5, 0.5))
+            .with_translation(Vec3::new(550.0, -120.0, 0.0)),
         ..Default::default()
     });
 
