@@ -4,8 +4,7 @@ use crate::{
 };
 
 use bevy::prelude::{
-    AssetServer, Camera2dBundle, Commands, Query, Res, Sprite, SpriteBundle, Transform, Vec2, Vec3,
-    Window,
+    AssetServer, Camera2dBundle, Commands, Query, Res, SpriteBundle, Transform, Vec3, Window,
 };
 
 pub fn create_board() -> Board {
@@ -33,11 +32,7 @@ pub fn setup(
         for y in 0..MAX_HEIGHT {
             commands.spawn((
                 SpriteBundle {
-                    sprite: Sprite {
-                        color: CellKind::NOTHING.get_color(),
-                        custom_size: Some(Vec2::new(10.0, 10.0)),
-                        ..Default::default()
-                    },
+                    texture: asset_server.load(CellKind::NOTHING.get_texture()),
                     transform: Transform::from_translation(Vec3::new(
                         (x * 10) as f32 - 500.0,
                         (y * 10) as f32 - 300.0,

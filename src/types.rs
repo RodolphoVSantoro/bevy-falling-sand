@@ -1,7 +1,4 @@
-use bevy::{
-    prelude::{Component, Resource, Timer},
-    render::color::Color,
-};
+use bevy::prelude::{Component, Resource, Timer};
 
 #[derive(PartialEq, Debug, Clone, Copy, Eq, Hash, PartialOrd, Ord)]
 pub enum CellKind {
@@ -10,16 +7,12 @@ pub enum CellKind {
     WATER = 2,
 }
 
-const NOTHING_COLOR: Color = Color::rgb(0.25, 0.25, 0.25);
-const SAND_COLOR: Color = Color::rgb(0.89, 0.70, 0.02);
-const WATER_COLOR: Color = Color::rgb(0.02, 0.02, 0.89);
-
 impl CellKind {
-    pub fn get_color(&self) -> Color {
+    pub fn get_texture(&self) -> String {
         match self {
-            CellKind::NOTHING => NOTHING_COLOR,
-            CellKind::SAND => SAND_COLOR,
-            CellKind::WATER => WATER_COLOR,
+            CellKind::NOTHING => "sprites/particles/nothing.png".to_string(),
+            CellKind::SAND => "sprites/particles/sand.png".to_string(),
+            CellKind::WATER => "sprites/particles/water.png".to_string(),
         }
     }
     pub fn get_weight(&self) -> i32 {

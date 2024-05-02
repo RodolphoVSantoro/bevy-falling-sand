@@ -5,14 +5,7 @@ use crate::{
     types::{Board, FrameTimer, Position},
 };
 
-use bevy::prelude::{Query, Res, ResMut, Sprite, Time};
-
-/**
- * Returns a range that is limited to the positive range of \[0, max\]
- */
-// fn limited_positive_range(start: i32, end: i32, max: usize) -> std::ops::Range<usize> {
-//     return (cmp::max(start, 0) as usize)..(cmp::min(end + 1, max as i32) as usize);
-// }
+use bevy::prelude::{AssetServer, Handle, Image, Query, Res, ResMut, Time};
 
 fn update_cells(board: &mut ResMut<Board>) {
     for x in 0..MAX_WIDTH {
@@ -27,10 +20,14 @@ fn update_cells(board: &mut ResMut<Board>) {
     }
 }
 
-fn update_sprites(board: &mut ResMut<Board>, sprite_query: &mut Query<(&mut Sprite, &Position)>) {
-    for (mut sprite, position) in sprite_query.iter_mut() {
+fn update_sprites(
+    board: &mut ResMut<Board>,
+    asset_server: Res<AssetServer>,
+    sprite_query: &mut Query<(&Position, &mut Handle<Image>)>,
+) {
+    for (position, mut sprite) in sprite_query.iter_mut() {
         let cell = &board.0[position.x][position.y];
-        sprite.color = cell.kind.get_color();
+        *sprite = asset_server.load(cell.kind.get_texture());
     }
 }
 
@@ -38,11 +35,12 @@ pub fn process_tick(
     time: Res<Time>,
     mut timer: ResMut<FrameTimer>,
     mut board: ResMut<Board>,
-    mut sprite_query: Query<(&mut Sprite, &Position)>,
+    asset_server: Res<AssetServer>,
+    mut sprite_query: Query<(&Position, &mut Handle<Image>)>,
 ) {
     if !timer.0.tick(time.delta()).just_finished() {
         return;
     }
     update_cells(&mut board);
-    update_sprites(&mut board, &mut sprite_query);
+    update_sprites(&mut board, asset_server, &mut sprite_query);
 }
